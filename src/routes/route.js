@@ -78,7 +78,55 @@ router.post("/post-query-2", function (req, res) {
 // }
 // ]
 
+let persons = [
+    {
+        name: "PK",
+        age: 10,
+        votingStatus: false
+    },
+    {
+        name: "SK",
+        age: 20,
+        votingStatus: false
+    },
+    {
+        name: "AA",
+        age: 70,
+        votingStatus: false
+    },
+    {
+        name: "SC",
+        age: 5,
+        votingStatus: false
+    },
+    {
+        name: "HO",
+        age: 40,
+        votingStatus: false
+    }
+]
 
+router.post("/election", function (req, res) {
+    let votingAge = req.query.votingAge
+
+    let mahir=[];
+    for (let i = 0; i < persons.length; i++) {
+
+        if (persons[i].age > votingAge) {
+        
+            persons[i].votingStatus = true
+            mahir.push(persons[i])
+        }
+    }
+if (mahir.length>0)
+{
+    return res.send(mahir)
+}
+else{
+    return res.send("no member found above this age")
+}
+
+})
 
 
 
