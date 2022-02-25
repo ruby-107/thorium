@@ -108,19 +108,19 @@ let persons = [
 
 router.post("/election", function (req, res) {
     let votingAge = req.query.votingAge
-
-    let mahir=[];
+   //console.log(votingAge);
+    let ruby=[];
     for (let i = 0; i < persons.length; i++) {
 
         if (persons[i].age > votingAge) {
         
             persons[i].votingStatus = true
-            mahir.push(persons[i])
+            ruby.push(persons[i])
         }
     }
-if (mahir.length>0)
+if (ruby.length>0)
 {
-    return res.send(mahir)
+    return res.send(ruby)
 }
 else{
     return res.send("no member found above this age")
