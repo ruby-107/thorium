@@ -1,3 +1,5 @@
+// this api says that you can save and update your data using mongo database.
+
 const express = require('express');
 const router = express.Router();
 const UserModel= require("../models/userModel.js")
