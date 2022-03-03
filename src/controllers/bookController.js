@@ -39,8 +39,8 @@ const createBook= async function (req, res) {
 
 
  const putBook= async function (req,res){
-     const update = await bookModel.updateMany({$or: [{"publisher":"62206a75214ed3541edebafd" },{"publisher": "6220883e9def1d7b549321e4"}]},{"isHardCover" : false},{new:true})
-      res.send(BookpopulateData)
+     const update = await bookModel.updateMany({$or: [{"publisher":"6220883e9def1d7b549321e4" },{"publisher": "62206a75214ed3541edebafd"}]},{"isHardCover" : false},{new:true});
+      res.send({msg: "update done check for the database for new updates"})
     }
    const updatePriceByRating = async function(req,res){
        const updatePrice = await bookModel.updateMany({rating:{$gt:3.5}},{$inc:{price:+10}},{new:true})

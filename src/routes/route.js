@@ -18,7 +18,7 @@ router.post("/createBook", bookController.createBook  )
 
 router.get("/getBooksData", bookController.getBooksData  )
 
-router.get("/putBook", bookController.putBook)
+router.put("/putBook", bookController.putBook)
 
 router.get("/updatePriceByRating", bookController.updatePriceByRating )
 router.put("/createBook2", bookController.createbook2)
