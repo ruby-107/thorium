@@ -10,12 +10,12 @@ const NewAuthor= async function (req, res) {
 }
 
 
-const getAuthorsData= async function (req, res) {
-    let authors = await authorModel.find()
-    res.send({data: authors})
-}
+// const getAuthorsData= async function (req, res) {
+//     let authors = await authorModel.find()
+//     res.send({data: authors})
+// }
 
 module.exports.NewAuthor= NewAuthor
 
 
-module.exports.getAuthorsData= getAuthorsData
+//module.exports.getAuthorsData= getAuthorsData
