@@ -1,7 +1,10 @@
 const express = require('express');
+const moment = require("moment")
+const requestIp = require("request-ip")
 const bodyParser = require('body-parser');
 const route = require('./routes/route.js');
 const { default: mongoose } = require('mongoose');
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -14,7 +17,19 @@ mongoose.connect("mongodb+srv://functionup-cohort:G0Loxqc9wFEGyEeJ@cluster0.rzot
 .then( () => console.log("MongoDb is connected"))
 .catch ( err => console.log(err) )
 
-app.use('/', route);
+const globalmiddleware = function(req,res,next){
+   let date = moment().format('MMMM DD YYYY, h:mm:ss ')
+  // const type = req.originalurl
+  let ip = req.ip;
+  
+   console.log(date,ip);
+ // console.log(req.socket.remoteAddress);
+  next()
+}
+ 
+app.use(globalmiddleware);
+
+app.use("/",route);
 
 
 app.listen(process.env.PORT || 3000, function () {
