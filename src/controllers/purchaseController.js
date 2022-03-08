@@ -1,6 +1,8 @@
-const OrderModel = require("../models/orderSchema.js");
-const ProductModel = require("../models/productSchema.js");
-const UserModel = require("../models/userSchema.js");
+const { count } = require("console")
+const purchaseModel = require("../models/purchaseModel");
+const ProductModel = require("../models/productModel");
+const UserModel = require("../models/userModel");
+
 
 const createOrder = async function (req, res) {
   let data = req.body;
@@ -13,15 +15,15 @@ const createOrder = async function (req, res) {
   let product = await ProductModel.findById(pId);
 
   if (data.hasOwnProperty("userId") == false) {
-    res.send({ error: "userID is required" });
+   res.send({ error: "userID is required" });
   } else if (!user) {
-    res.send({ error: "wrong userID entered" });
+     res.send({ error: "wrong userID entered" });
   }
 
   if (data.hasOwnProperty("productId") == false) {
-    res.send({ error: "productId is required" });
+     res.send({ error: "productId is required" });
   } else if (!product) {
-    res.send({ error: "wrong productID entered" });
+     res.send({ error: "wrong productID entered" });
   }
 
   let productDetail = await ProductModel.findById(pId);
@@ -46,7 +48,7 @@ const createOrder = async function (req, res) {
       
       data.amount = priceValue;
       data.isFreeAppUser = false
-      let orderDetail = await OrderModel.create(data);      
+      let orderDetail = await purchaseModel.create(data);      
       res.send({ order: orderDetail });
     } else {
       res.send({ error: "insufficient balance" });
@@ -54,7 +56,7 @@ const createOrder = async function (req, res) {
   } else {
     data.amount = 0;
     data.isFreeAppUser = true
-    let orderDetails = await OrderModel.create(data);
+    let orderDetails = await purchaseModel.create(data);
     res.send({ order: orderDetails });
   }
 };
