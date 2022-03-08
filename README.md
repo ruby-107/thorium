@@ -1,4 +1,7 @@
-# TOPIC: Middleware2
+#
+
+- Write a POST api /users to register a user from the user details in request body. 
+- Write a POST api /login to login a user that takes user details like email and password from the request body. If the credentials don't match with any user's data return a suitable error TOPIC: Middleware2
 
 ## Authentication with JWT
 - Token generation
@@ -23,10 +26,7 @@
     "__v" : 0
 }
 ```
-
-
-- Write a POST api /users to register a user from the user details in request body. 
-- Write a POST api /login to login a user that takes user details like email and password from the request body. If the credentials don't match with any user's data return a suitable error.
+.
 On successful login, generate a JWT token and return it in response body.
 - Write a GET api /users/<userId> to fetch user details. Pass the userId as path param in the url. Check that request must contain **x-auth-token** header. If absent, return a suitable error.
 If present, check that the token is valid.
