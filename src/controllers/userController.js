@@ -4,12 +4,12 @@ const tokenCheck = require("../Middleware/auth");
 
 
 
-const createUser = async function (abcd, xyz) {
+const createUser = async function (req, res) {
 
-  let data = abcd.body;
+  let data = req.body;
   let savedData = await userModel.create(data);
 
-  xyz.send({ msg: savedData });
+  res.status(201).send({ msg: savedData });
 };
 
 
