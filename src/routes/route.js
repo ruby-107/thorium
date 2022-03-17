@@ -11,7 +11,7 @@ const mid1=require('../middleware/tokenMiddleware')
 
 
 
-//=-------------------------------------------//////
+//=---------------------------------------
 router.post("/Authors" ,authorController.createAuthor )
 
 router.post('/blogs',mid1.mid1, blogController.Blogs)

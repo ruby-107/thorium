@@ -1,7 +1,7 @@
 let blogModel = require('../model/blogModel');
 let authorModel = require('../model/authorModel');
 const jwt = require('jsonwebtoken')
-const mid1 = require('../middleware/middleware')
+const mid1 = require('../middleware/tokenMiddleware')
 
 
 //===============================================================================================================================
@@ -9,12 +9,12 @@ let Blogs = async function (req, res) {
 
     try {
         let data = req.body
-        // if (!req.body.authorId === req.decodeToken._id) {
-        //     res.send("not authorized")
-        // } else {
-        //     if (data.isPublished == true) {
-        //         data["publishedAt"] = new Date();
-        //     }
+        if (!req.body.authorId === req.decodeToken._id) {
+            res.send("not authorized")
+        } else {
+            if (data.isPublished == true) {
+                data["publishedAt"] = new Date();
+            }
             let authorId = data.authorId
             let authorReq = await authorModel.findById(authorId)
             if (authorReq) {
@@ -24,7 +24,7 @@ let Blogs = async function (req, res) {
                 res.status(400).send({ status: false, msg: `${authorId} is not available, please enter valid authorId` })
             }
         }
-    catch (error) {
+    } catch (error) {
         res.status(500).send({ status: false, message:error.message })
     }
 
@@ -156,7 +156,8 @@ const specificdeleting = async function (req, res) {
         res.status(500).send({ status: false, message:err.meassage })
     }
 }
-//=========================================================================================================================================================================
+//===============================================================================================================================
+
 const loginAuthor = async function (req, res) {
     try {
         let data = req.body
@@ -178,7 +179,6 @@ const loginAuthor = async function (req, res) {
     }
 }
 
-//==================================================================================================================================
 
 
 
@@ -191,4 +191,3 @@ module.exports.deleting = deleting;
 module.exports.updating = updating;
 module.exports.specificdeleting = specificdeleting
 module.exports.loginAuthor = loginAuthor
-

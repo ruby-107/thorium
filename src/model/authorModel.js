@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
-const validator = require('validator');
+//const validator = require('validator')
+
 
 const authorSchema = new mongoose.Schema({
     fname: {
@@ -16,12 +17,12 @@ const authorSchema = new mongoose.Schema({
     },
     email: {
         type:String,
-        unique: true,
-        validate:{
-            validator: validator.isEmail,
-            message: '{VALUE} is not a valid email',
-            isAsync: false
-          }
+        unique: true
+        // validate(val) {
+        //     if (!validator.isEmail(val)) {
+        //         throw new Error("Invalid emailid")
+        //     }
+        
       
     },
     password: {
@@ -30,4 +31,4 @@ const authorSchema = new mongoose.Schema({
     }
 
 }, { timestamps: true })
-module.exports = mongoose.model('Author', authorSchema)
+module.exports = mongoose.model('AuthPoject1', authorSchema)
