@@ -16,19 +16,18 @@ const authorSchema = new mongoose.Schema({
         enum: ['Mr', 'Mrs', 'Miss']
     },
     email: {
-        type:String,
-        unique: true,
-        validate(val) {
-            if (!validator.isEmail(val)) {
-                throw new Error("Invalid emailid")
-            }
-        
-      
-    },
+        unique:true,
+         type: String,
+         required: true,
+         match: [/^\w+([\.-]?\w+)@\w+([\. -]?\w+)(\.\w{2,3})+$/, 'Please fill a valid email address']
+     },
+
     password: {
         type: String,
-        requried: true
-    }
+        requried: true,
+        match:[/^(?=.\d)(?=.[a-z])(?=.[A-Z])(?=.[0-9a-zA-Z]).{8,}$/,"Password should be combination of one uppercase , one lower case, one special char, one digit and min 8 , max 20 char long"]
+
+    
 }
 
 }, { timestamps: true })
