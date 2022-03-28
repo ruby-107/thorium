@@ -12,7 +12,7 @@ const bookSchema = new mongoose.Schema({
         reviews : { type : Number, default : 0},                    //comment: Holds number of reviews of this book
         deletedAt : { type : Date, default : null},
         isDeleted : { type: Boolean, default : false},             //when the document is deleted
-        releasedAt : { type : Date, require : true},                           //format("YYYY-MM-DD")           
+        releasedAt : { type : String, require : true},                           //format("YYYY-MM-DD")           
 
     } ,   { timestamp : true})
     
