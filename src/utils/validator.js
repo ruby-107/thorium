@@ -29,6 +29,20 @@ const isValidNumber = function(value){
     if(typeof value === 'number' && value.trim().length === 0) return false;
     return true;
 }
+const isValidNumber1 = function(value){
+    if(typeof value === 'number' ) return true;
+    
+}
+function isValidDate(dateString) {
+    var regEx = /^\d{4}-\d{2}-\d{2}$/;
+    if(!dateString.match(regEx)) return false;  // Invalid format
+    var d = new Date(dateString);
+    var dNum = d.getTime();
+    if(!dNum && dNum !== 0) return false; // NaN value, Invalid date
+    return d.toISOString().slice(0,10) === dateString;
+  }
+
+
 
 module.exports = {
     isValid,
@@ -36,5 +50,8 @@ module.exports = {
     isValidObjectId,
     isValidString,
     isValidNumber,
-    isValidRequestBody
+    isValidRequestBody,
+    isValidNumber1,
+    isValidDate
+    
 }

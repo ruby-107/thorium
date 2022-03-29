@@ -61,10 +61,7 @@ const createUser = async function (req, res) {
             res.status(400).send({ status: false, msg: `password is required` })
             return
         }
-        // if(!(/^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,15}$/.test(password)))
-        // return res.status(400).send({ status : false, msg :`password length should be betwwen 8-15` })
-
-
+        
         let user = await userModel.create(req.body)
         res.status(201).send({ status: true, data: user })
         return

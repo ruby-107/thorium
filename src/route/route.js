@@ -4,7 +4,9 @@ const router = express.Router();
 
 const userController =require('../controller/userController')
 const bookController = require("../controller/bookController")
-//const reviewController = require('../controller/reviewController')
+const reviewController = require('../controller/reviewController')
+
+
 
 router.post("/register" ,userController.createUser )
 
@@ -16,7 +18,14 @@ router.get("/Books",bookController.getBook)
 
 router.put("/books/:bookId",bookController.updateBook)
 
-  
-//router.post("/books/:bookId",reviewController.addReview)
+router.delete("/books/:bookId",bookController.deleteBookById) 
+
+router.get("/books/:bookId",bookController.getBookByReview)
+
+router.post("/books/:bookId/review",reviewController.createReview)
+
+router.get("/review",reviewController.getReview)
+
+router.put("/books/:bookId/review/:reviewId",reviewController.updateReview)
 
 module.exports = router;
