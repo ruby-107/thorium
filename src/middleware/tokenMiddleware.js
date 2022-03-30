@@ -18,24 +18,6 @@ let authentication = async function (req, res, next) {
 }
 
 
-
-// let authentication = function (req, res, next) {
-//   try {
-//     let token = req.headers["x-api-key"];
-//     if (!token) {
-//       return res.status(404).send({ status: false, msg: "token not found" });
-//     }
-//     let decodetoken = jwt.verify(token, "Project-Books");
-//     if (!decodetoken) {
-//       return res
-//         .status(401)
-//         .send({ status: false, msg: "you are not authenticated" });
-//     }
-//     next();
-//   } catch (err) {
-//     res.status(500).send({ status: false, error: err.message });
-//   }
-// };
 // ===================================================================================================
 let authorise = async function (req, res, next) {
   try {
