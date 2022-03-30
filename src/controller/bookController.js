@@ -129,6 +129,8 @@ module.exports.createBook = createBook
 
         module.exports.getBook = getBook
 
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const getBookByReview = async function(req,res){
@@ -146,7 +148,7 @@ console.log(BookId)
        return res.status(400).send({ status: false, msg: "BookId not Found" })
        if(BookDetail.isDeleted==true){return res.status(400).send({status:false,msg:"deleted document"})}
 
-    let reviewDetails = await reviewModel.find({ BookId: BookDetail._id })
+    let reviewDetails = await reviewModel.find({ bookId: BookDetail._id })
     if (!reviewDetails) {
          return res.status(400).send({ status: false, msg: "please provide review details" })
     }
@@ -263,7 +265,7 @@ const deleteBookById = async function (req, res) {
         }
         let deleteBook = await bookModel.findByIdAndUpdate({ _id: bookId }, { isDeleted: true, deletedAt: new Date() }, { new: true })
         if (validator.isValidString(deleteBook)) {
-            res.status(200).send({ status: true, msg: " successfully delete content", data: "deleteBook"})
+            res.status(200).send({ status: true, msg: " successfully delete content", data: deleteBook})
             return
         }
     } catch (error) {

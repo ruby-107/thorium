@@ -8,8 +8,10 @@ const isValid = (value)=>{
 }
 
 const isValidRequestBody = function(requestBody){
-   return Object.keys({requestBody}).length > 0;
+    if (Object.keys(requestBody).length > 0) { return true }
 }
+//    return Object.keys({requestBody}).length > 0;
+// }
 
 const isValidTitle = function (title) {
     return ['Mr', 'Mrs', 'Miss'].indexOf(title) !== -1
@@ -18,12 +20,13 @@ const isValidTitle = function (title) {
 
 const isValidObjectId = function(objectId){
     return mongoose.Types.ObjectId.isValid(objectId);
-}
+ }
 
 const isValidString = function(value){
-    if(typeof value === 'string' && value.trim().length === 0) return false;
+    //if (typeof value === 'string' && value.trim().length === 0) return false;
+    if (typeof value === 'string' && value.length == 0) return false;
     return true;
-}
+} 
 
 const isValidNumber = function(value){
     if(typeof value === 'number' && value.trim().length === 0) return false;

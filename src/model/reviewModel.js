@@ -11,7 +11,7 @@ const reviewsSchema = new mongoose.Schema({
     reviewedBy : {type : String, required : true, default : "Guest" , trim : true},
              // value: reviewer's name
     reviewedAt  : { type : Date, require : true, trim : true},
-    rating : {type : Number, require : true, enum : [1,2,3,4,5]},
+    rating : {type : Number, require : true,min :1,max :5},// enum : [1,2,3,4,5]},
     review : { type : String},
     isDeleted : {type : Boolean, default : false}
 

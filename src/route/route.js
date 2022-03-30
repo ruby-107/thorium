@@ -5,27 +5,37 @@ const router = express.Router();
 const userController =require('../controller/userController')
 const bookController = require("../controller/bookController")
 const reviewController = require('../controller/reviewController')
+const mid = require("../middleware/tokenMiddleware")
 
 
-
+// post for user
 router.post("/register" ,userController.createUser )
 
+// post for login
 router.post("/login" ,userController.login)
 
-router.post("/Books",bookController.createBook)
+//post for book
+router.post("/Books",mid.authentication, bookController.createBook)
 
-router.get("/Books",bookController.getBook)
+//get for getBook
+router.get("/Books", mid.authentication, bookController.getBook)
 
-router.put("/books/:bookId",bookController.updateBook)
+//put for updatebook
+router.put("/books/:bookId", mid.authentication, mid.authorise, bookController.updateBook)
 
-router.delete("/books/:bookId",bookController.deleteBookById) 
+//delete for book
+router.delete("/books/:bookId",mid.authorise,  bookController.deleteBookById) 
 
-router.get("/books/:bookId",bookController.getBookByReview)
+//get for getbookbyreview
+router.get("/books/:bookId", mid.authentication, bookController.getBookByReview)
 
+// post for create review
 router.post("/books/:bookId/review",reviewController.createReview)
 
-router.get("/review",reviewController.getReview)
-
+// put for updateReview
 router.put("/books/:bookId/review/:reviewId",reviewController.updateReview)
+
+// delete for review
+router.delete("/books/:bookId/review/:reviewId",reviewController.deletereview)
 
 module.exports = router;
