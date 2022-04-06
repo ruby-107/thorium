@@ -2,20 +2,50 @@ const validUrl = require("valid-url");
 const shortId = require("shortid");
 const urlModel = require("../models/urlModel");
 const validation = require('../util/validation');
-const urlmodel = require("../models/urlModel");
+
+const redis = require("redis");
+const { promisify } = require("util");
+const redisClient = redis.createClient(
+  18380,
+  "redis-18380.c263.us-east-1-2.ec2.cloud.redislabs.com",
+  { no_ready_check: true }
+);
+redisClient.auth("v2IVQrUzpKMuTpLwALcZiNye9uSo3tSb", function (err) {
+  if (err) throw err;
+});
+
+
+
+//const redisClient = redis.createClient('redis-18380.c263.us-east-1-2.ec2.cloud.redislabs.com',password:'v2IVQrUzpKMuTpLwALcZiNye9uSo3tSb');
+
+
+redisClient.on('connect',() => {
+    console.log('connected to redis successfully!');
+})
+
+redisClient.on('error',(error) => {
+    console.log('Redis connection error :', error);
+})
+const SET_ASYNC = promisify(redisClient.SET).bind(redisClient);
+const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
+
+ const isVaildUrl =  /http(s?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////
- 
+
 
 
 const createUrl = async (req, res) => {
   try {
+
+    // The API base Url endpoint
     const baseUrl = "http://localhost:3000";
 
     if (!validUrl.isUri(baseUrl)) {
       return res.status(400).json("Invalid Base Url");
     }
-    
+
     if (!(validation.isValidRequestBody(req.body))) {
       return res.status(400).send({
         status: false,
@@ -23,26 +53,35 @@ const createUrl = async (req, res) => {
       });
     }
 
+    // destructure the longUrl from req.body.longUrl
     const { longUrl } = req.body;
 
     if (!(validation.isVaild(longUrl))) {
       return res.status(400).json({ status: false, msg: "longUrl is required" });
     }
+    
 
-    if (validUrl.isUri(longUrl)) {
-      let isUrlUsed = await urlModel.findOne({longUrl});
+    if (isVaildUrl.test(longUrl) ){
 
-      if (isUrlUsed) {
-        res.status(400).json({ status: false, msg: "url already exits" });
-      }
-    } else {
-      res.status(400).json({ status: false, msg: "invalid longurl" });
+     let isUrlUsed = await urlModel.findOne({longUrl});
+
+        if (isUrlUsed) {
+       return   res.status(200).json({ status: true, msg: isUrlUsed });
+        }
     }
-    // Create url code
+    else {
+   // /http(s?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
+     // if (!(/\b(https?|ftp|file):\/\/[\-A-Za-z0-9+&@#\/%?=_|!:,.;]*[\-A-Za-z0-9+&@#\/%=_|]/.test(longUrl))) {
+     
+      return  res.status(400).json({ status: false, msg: "invalid longurl" });
+        }
+
+    //if valid, we create the url code
     const urlCode = shortId.generate();
 
-    //create short url
-    const shortUrl = baseUrl + "/" + urlCode;
+
+    //join the generated short code the the base url
+    const shortUrl = baseUrl + "/" + urlCode.toLowerCase()
 
     let urlCreated = {
       longUrl,
@@ -51,12 +90,14 @@ const createUrl = async (req, res) => {
     };
 
     let savedData = await urlModel.create(urlCreated);
-    res.status(201).json({ status: true, msg:"URL created successfully", data: savedData });
+    await SET_ASYNC(urlCode.toLowerCase(), longUrl)
+    res.status(201).json({ status: true, msg: "URL created successfully", data: savedData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: false, msg: error.message });
   }
 };
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,9 +106,14 @@ const createUrl = async (req, res) => {
 
 const getUrl = async (req, res) => {
   try {
+    let cachedData = await GET_ASYNC(req.params.urlCode.trim().toLowerCase());
+      if (cachedData) {
+        console.log("data from cache memory")
+        res.status(302).redirect(cachedData);
+      } 
     const url = await urlModel.findOne({ urlCode: req.params.urlCode });
     if (url) {
-      return res.status(301).redirect(url.longUrl);
+      return res.status(302).redirect(url.longUrl);
     } else {
       return res.status(404).json({ status: false, msg: "URL not found" });
     }
@@ -78,3 +124,13 @@ const getUrl = async (req, res) => {
 
 module.exports.getUrl = getUrl;
 module.exports.createUrl = createUrl;
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+       
+
+
