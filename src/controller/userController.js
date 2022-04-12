@@ -160,39 +160,42 @@ const login = async (req, res) => {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-const getUserProfile = async (req, res) => {
+const getUserProfile = async function (req, res) {
   try {
       let userId = req.params.userId
 
-      if(!validator.isValid(userId)){
-        return  res.status(400).send({status:false, msg:`userId is required`})
-      }
-      if(!validator.isValidObjectId(userId)){
-        return  res.status(400).send({status:false, msg:`userId is vaild`})
-      }
+      if (!validator.isValid(userId)) {
+          return res.status(400).send({ status: false, msg: "userId required" })
 
-      const userProfile = await userModel.findOne({userId:userId})
-      if(!userProfile){
-          return res.status(400).send({ status: false, msg:`not found userId`})
-       }
-       let result = {
-           address : userProfile.address,
-           _id: userProfile._id,
-           fname : userProfile.fname,
-           lname : userProfile.lname,
-           email: userProfile.email,
-           password:userProfile.password,
-           phone:userProfile.phone,
-           createdAt : userProfile.createdAt,
-           updatedAt : userProfile.updatedAt
-       }
-       return res.status(200).send({status:true, data:result})
-  } catch (err) {
-    res.status(500).json({ status: false, msg: err.message });
+      }
+      if (!validator.isValidObjectId(userId)) {
+          return res.status(400).send({ status: false, msg: "userId invalid" })
+      }
+      let userprofile = await userModel.findById(userId)
+      if (!userprofile) {
+          return res.status(404).send({ status: false, msg: "not found " })
+      }
+      let result = {
+          address: userprofile.address,
+          _id: userprofile._id,
+          fname: userprofile.fname,
+          lname: userprofile.lname,
+          email: userprofile.email,
+          phone: userprofile.phone,
+          password: userprofile.password,
+          createdAt: userprofile.createdAt,
+          updatedAt: userprofile.updatedAt
+      }
+      return res.status(200).send({ status:true, data: result })
+  }
+  catch (err) {
+      return res.status(500).send({ status: false, msg: err.message })
   }
 };
 
+
 module.exports.getUserProfile=getUserProfile
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -210,18 +213,12 @@ const updateProfile = async (req, res) => {
     }
 
     if (!validator.isValidRequestBody(req.body)) {
-        return res.status(400).send({
-            status: false,
-            message: "Invalid request parameters. Please provide user's details to update."
-        })
+        return res.status(400).send({status: false,message: "Invalid request parameters. Please provide user's details to update." })
     }
 
     const UserProfile = await userModel.findOne({ _id: userId })
     if (!UserProfile) {
-        return res.status(400).send({
-            status: false,
-            message: `${userId}  doesn't exists`
-        })
+        return res.status(400).send({status: false, message: `${userId}  doesn't exists` })
     }
 
     //authorization
@@ -235,18 +232,9 @@ const updateProfile = async (req, res) => {
     if (!validator.validString(fname)) {
         return res.status(400).send({ status: false, message: 'fname is Required' })
     }
-    if (fname) {
-        if (!validator.isValid(fname)) {
-            return res.status(400).send({ status: false, message: "Invalid request parameter, please provide fname" })
-        }
-    }
+    
     if (!validator.validString(lname)) {
         return res.status(400).send({ status: false, message: 'lname is Required' })
-    }
-    if (lname) {
-        if (!validator.isValid(lname)) {
-            return res.status(400).send({ status: false, message: "Invalid request parameter, please provide lname" })
-        }
     }
 
     //email validation
