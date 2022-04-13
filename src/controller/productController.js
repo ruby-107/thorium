@@ -1,6 +1,7 @@
 const validator = require('../util/validator')
 const aws = require('../util/aws')
 const productModel = require('../Model/productModel')
+//const userModel = require('../Model/userModel')
 const currencySymbol = require("currency-symbol-map")
 const mongoose = require('mongoose')
 
@@ -117,10 +118,51 @@ const createProduct = async function(req, res) {
 module.exports.createProduct =createProduct
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const getProductProfile = async function (req, res) {
+    try {
+        let productId = req.params.productId
+    
+
+        if (!validator.isValidObjectId(productId)) {
+            return res.status(400).send({ status: false, msg: "productId invalid" })
+        }
+        let productProfile = await productModel.findById(productId)
+        if (!productProfile) {
+            return res.status(404).send({ status: false, msg: "not found " })
+        }
+        let result = {
+            _id: productProfile._id,
+            title : productProfile.title,
+            description: productProfile.description,
+            price: productProfile.price,
+            currencyId: productProfile.currencyId,
+            currencyFormat: productProfile.currencyFormat,
+            isFreeShipping : productProfile.isFreeShipping,
+            style: productProfile.style,
+            availableSizes: productProfile.availableSizes,
+            installments: productProfile.installments,
+            productImage: productProfile.productImage,
+            createdAt: productProfile.createdAt,
+            updatedAt: productProfile.updatedAt
+
+           
+        }
+        return res.status(200).send({ status:true, data: result })
+    }
+    catch (err) {
+        return res.status(500).send({ status: false, msg: err.message })
+    }
+  };
+  
+  
+  module.exports.getProductProfile=getProductProfile
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const updateProduct = async function (req, res) {
     try {
         let reqBody = req.body
-        const { title, description, price, isFreeShipping, style, availableSizes, installments } = reqBody
+        const { title, description, price, isFreeShipping, style, availableSizes, installments,productImage } = reqBody
         const findProduct = await productModel.findOne({ _id: req.params.productId, isDeleted: false })
         if (!findProduct) {
             return res.status(404).send({ status: false, msg: "product id does not exists" })
@@ -147,6 +189,8 @@ const updateProduct = async function (req, res) {
 }
 module.exports.updateProduct = updateProduct
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const productDel=async function (req, res){
     try{

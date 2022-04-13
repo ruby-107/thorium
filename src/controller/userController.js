@@ -183,6 +183,7 @@ const getUserProfile = async function (req, res) {
           email: userprofile.email,
           phone: userprofile.phone,
           password: userprofile.password,
+          profileImage : userprofile.profileImage,
           createdAt: userprofile.createdAt,
           updatedAt: userprofile.updatedAt
       }
