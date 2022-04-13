@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
    billing: {
             street:{ type:String, require:true},
             city: {type:String,require:true},
-            pincode: {type:String,require:true}
+            pincode: {type:Number,require:true}
           }
     }, 
    },   {timestamps:true})   
