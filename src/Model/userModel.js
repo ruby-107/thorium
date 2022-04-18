@@ -12,12 +12,13 @@ const userSchema = new mongoose.Schema({
         shipping: {
           street: {type:String,require:true,trim:true},
           city: {type:String,require:true,trim:true},
-          pincode: {type:Number,require:true,trim:true}
+          pincode: {type:Number,require:true,trim:true,maxLen: [6, "Password length should not be greater than 6"] }
         },
    billing: {
             street:{ type:String, require:true},
             city: {type:String,require:true},
-            pincode: {type:Number,require:true}
+            pincode: {type:Number,require:true, maxLen: [6, "Password length should not be greater than 6"]}
+           
           }
     }, 
    },   {timestamps:true})   
