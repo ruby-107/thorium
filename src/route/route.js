@@ -34,8 +34,8 @@ router.delete("/users/:userId/cart",middleware.auth,cartController.deleteCart)
 
 
 ////order
-router.post("/users/:userId/orders",middleware.auth,orderController.createOrder)
+//router.post("/users/:userId/orders",middleware.auth,orderController.createOrder)
 router.put("/users/:userId/orders",middleware.auth,orderController.updateOrder)
-//router.post("/users/:userId/orders",middleware.auth,orderController.orderCreation)
+router.post("/users/:userId/orders",middleware.auth,orderController.orderCreation)
 
 module.exports = router

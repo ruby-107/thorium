@@ -5,6 +5,7 @@ const productModel = require('../Model/productModel')
 const currencySymbol = require("currency-symbol-map")
 const mongoose = require('mongoose')
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // //creating product by validating all details.
 const createProduct = async function(req, res) {
@@ -131,83 +132,56 @@ module.exports.createProduct =createProduct
     }
 }
 module.exports.getProductProfile = getProductProfile
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+const GetProducts = async function (req, res) {
+    try {
+        let Size = req.query.Size
+        let name = req.query.name
+        let priceSort = req.query.priceSort
+        let priceGreaterThan = req.query.priceGreaterThan
+        let priceLessThan = req.query.priceLessThan
+        let priceObj = {}
+        if (priceGreaterThan) {
+            priceObj["$gt"] = priceGreaterThan
+        }
+        if (priceLessThan) {
+            priceObj["$lt"] = priceLessThan
+        }
+        if (priceLessThan || priceGreaterThan) {
+            let priceSearch = await productModel.find({ price: priceObj, isDeleted: false }).sort({ price: priceSort })
+            console.log(priceSearch)
+            if (priceSearch.length != 0) {
+                return res.status(200).send({ status: true, msg: "Success", data: { priceSearch } })
+            } else {
+                return res.status(400).send({ status: false, msg: "No matches in this price range found" })
+            }
+        }
+        if (Size) {
+            let findSize = await productModel.find({ availableSizes: Size, isDeleted: false }).sort({ price: priceSort })
 
+            if (findSize.length != 0) {
+                return res.status(200).send({ status: true, msg: "Success", data: { findSize } })
+            } else {
+                return res.status(400).send({ status: false, msg: `No products of size ${Size} found` })
+            }
+        }
+        if (name) {
+            let findName = await productModel.find({ title: { $regex: name, $options: 'i' }, isDeleted: false }).sort({ price: priceSort })
+            // console.log(findName)
+            if (findName.length != 0) {
+                return res.status(200).send({ status: true, msg: "Success", data: { findName } })
+            } else {
+                return res.status(400).send({ status: false, msg: `No product of name ${name} found` })
+            }
+        }
 
+    } catch (err) {
+        res.status(500).send({ status: false, msg: err.message })
+    }
+}
+module.exports.GetProducts = GetProducts
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// const getProductbyQuery = async function (req, res) {
-//    try {
-//         const filterQuery = { isDeleted: false } //complete object details.
-//         const queryParams = req.query;
-
-//         if (validator.isValidRequestBody(queryParams)) {
-//             const { size, name, priceGreaterThan, priceLessThan, priceSort } = queryParams;
-
-//             //validation starts.
-//             if (validator.isValid(size)) {
-//                 filterQuery['availableSizes'] = size
-//             }
-
-//             //using $regex to match the subString of the names of products & "i" for case insensitive.
-//             if (validator.isValid(name)) {
-//                 filterQuery['title'] = {}
-//                 filterQuery['title']['$regex'] = name
-//                 filterQuery['title']['$options'] = 'i'
-//             }
-
-//             //setting price for ranging the product's price to fetch them.
-//             if (validator.isValid(priceGreaterThan)) {
-
-//                 if (!(!isNaN(Number(priceGreaterThan)))) {
-//                     return res.status(400).send({ status: false, message: `priceGreaterThan should be a valid number` })
-//                 }
-//                 if (priceGreaterThan <= 0) {
-//                     return res.status(400).send({ status: false, message: `priceGreaterThan should be a valid number` })
-//                 }
-//                 if (!filterQuery.hasOwnProperty('price'))
-//                     filterQuery['price'] = {}
-//                 filterQuery['price']['$gte'] = Number(priceGreaterThan)
-//                     //console.log(typeof Number(priceGreaterThan))
-//             }
-
-//             //setting price for ranging the product's price to fetch them.
-//             if (validator.isValid(priceLessThan)) {
-
-//                 if (!(!isNaN(Number(priceLessThan)))) {
-//                     return res.status(400).send({ status: false, message: `priceLessThan should be a valid number` })
-//                 }
-//                 if (priceLessThan <= 0) {
-//                     return res.status(400).send({ status: false, message: `priceLessThan should be a valid number` })
-//                 }
-//                 if (!filterQuery.hasOwnProperty('price'))
-//                     filterQuery['price'] = {}
-//                 filterQuery['price']['$lte'] = Number(priceLessThan)
-                   
-//             }
-
-//             //sorting the products acc. to prices => 1 for ascending & -1 for descending.
-//             if (validator.isValid(priceSort)) {
-
-//                 if (!((priceSort == 1) || (priceSort == -1))) {
-//                     return res.status(400).send({ status: false, message: `priceSort should be 1 or -1 ` })
-//                 }
-
-//                 const products = await productModel.find(filterQuery).sort({ price: priceSort })
-                   
-//                 if (Array.isArray(products) && products.length === 0) {
-//                     return res.status(404).send({ productStatus: false, message: 'No Product found' })
-//                 }
-
-//                 return res.status(200).send({ status: true, message: 'Product list', data2: products })
-//               }
-//            }  } catch (err) {
-//                 res.status(500).send({ status: false, msg: err.message })
-//           }
-//     }
-
-//         module.exports.getProductbyQuery = getProductbyQuery
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const updateProduct = async function (req, res) {
@@ -258,50 +232,4 @@ const productDel=async function (req, res){
 }
 module.exports.productDel=productDel
 ////////////////////////////////////////////////////////////////////////////////////////////////
-const GetProducts = async function (req, res) {
-    try {
-        let Size = req.query.Size
-        let name = req.query.name
-        let priceSort = req.query.priceSort
-        let priceGreaterThan = req.query.priceGreaterThan
-        let priceLessThan = req.query.priceLessThan
-        let priceObj = {}
-        if (priceGreaterThan) {
-            priceObj["$gt"] = priceGreaterThan
-        }
-        if (priceLessThan) {
-            priceObj["$lt"] = priceLessThan
-        }
-        if (priceLessThan || priceGreaterThan) {
-            let priceSearch = await productModel.find({ price: priceObj, isDeleted: false }).sort({ price: priceSort })
-            console.log(priceSearch)
-            if (priceSearch.length != 0) {
-                return res.status(200).send({ status: true, msg: "Success", data: { priceSearch } })
-            } else {
-                return res.status(400).send({ status: false, msg: "No matches in this price range found" })
-            }
-        }
-        if (Size) {
-            let findSize = await productModel.find({ availableSizes: Size, isDeleted: false }).sort({ price: priceSort })
 
-            if (findSize.length != 0) {
-                return res.status(200).send({ status: true, msg: "Success", data: { findSize } })
-            } else {
-                return res.status(400).send({ status: false, msg: `No products of size ${Size} found` })
-            }
-        }
-        if (name) {
-            let findName = await productModel.find({ title: { $regex: name, $options: 'i' }, isDeleted: false }).sort({ price: priceSort })
-            // console.log(findName)
-            if (findName.length != 0) {
-                return res.status(200).send({ status: true, msg: "Success", data: { findName } })
-            } else {
-                return res.status(400).send({ status: false, msg: `No product of name ${name} found` })
-            }
-        }
-
-    } catch (err) {
-        res.status(500).send({ status: false, msg: err.message })
-    }
-}
-module.exports.GetProducts = GetProducts
