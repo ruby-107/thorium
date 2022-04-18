@@ -67,15 +67,9 @@ const createProduct = async function(req, res) {
         }
 
         if (isFreeShipping) {
-            if (!(isFreeShipping != true)) {
-                return res.status(400).send({ status: false, message: "isFreeShipping must be a boolean value" })
-            }
+            if (typeof isFreeShipping != "boolean") {
+                return res.status(400).send({status: false,message: `isFreeShipping must be either 'true' or 'false'.`})}
         }
-
-        // if (isFreeShipping) {
-        //     if (typeof isFreeShipping != "boolean") {
-        //         return res.status(400).send({status: false,message: `isFreeShipping must be either 'true' or 'false'.`})}
-        // }
 
         if (!(productImage && productImage.length > 0)) {
             return res.status(400).send({ status: false, msg: "Invalid request parameters. Provide productImage." });
@@ -124,44 +118,6 @@ module.exports.createProduct =createProduct
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// const getProductProfile = async function (req, res) {
-//     try {
-//         let productId = req.params.productId
-    
-
-//         if (!validator.isValidObjectId(productId)) {
-//             return res.status(400).send({ status: false, msg: "productId invalid" })
-//         }
-//         let productProfile = await productModel.findById(productId)
-//         if (!productProfile) {
-//             return res.status(404).send({ status: false, msg: "not found " })
-//         }
-//         let result = {
-//             _id: productProfile._id,
-//             title : productProfile.title,
-//             description: productProfile.description,
-//             price: productProfile.price,
-//             currencyId: productProfile.currencyId,
-//             currencyFormat: productProfile.currencyFormat,
-//             isFreeShipping : productProfile.isFreeShipping,
-//             style: productProfile.style,
-//             availableSizes: productProfile.availableSizes,
-//             installments: productProfile.installments,
-//             productImage: productProfile.productImage,
-//             createdAt: productProfile.createdAt,
-//             updatedAt: productProfile.updatedAt
-
-           
-//         }
-//         return res.status(200).send({ status:true, data: result })
-//     }
-//     catch (err) {
-//         return res.status(500).send({ status: false, msg: err.message })
-//     }
-//   };
-  
-  
-//   module.exports.getProductProfile=getProductProfile
 
   const getProductProfile = async function (req, res) {
     try {

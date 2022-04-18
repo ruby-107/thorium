@@ -18,11 +18,19 @@ route.get("/test-me",function(req,res){
 })
 
 try {
-    mongoose.connect("mongodb+srv://rubygupta7505:GDDYMfHDEGehjUj0@cluster0.xf64f.mongodb.net/Project5-Group38Database",{useNewUrlParser:true});
+    mongoose.connect("mongodb+srv://rubygupta7505:GDDYMfHDEGehjUj0@cluster0.xf64f.mongodb.net/ShoppingCartproject-5",{useNewUrlParser:true});
     console.log(`MongoDB connection successful.`);
 } catch (error) {
     console.log(error);
 }
+
+// try {
+//     mongoose.connect("mongodb+srv://rubygupta7505:GDDYMfHDEGehjUj0@cluster0.xf64f.mongodb.net/Project5-Group38Database",{useNewUrlParser:true});
+//     console.log(`MongoDB connection successful.`);
+// } catch (error) {
+//     console.log(error);
+// }
+
 
 const port = process.env.PORT || 3000;
 
