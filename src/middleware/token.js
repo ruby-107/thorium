@@ -11,6 +11,7 @@ const auth = async (req, res, next) => {
     let splitToken = token.split(' ')
 
     let decodeToken = jwt.decode(splitToken[1], 'Group-38')
+    console.log(decodeToken)
     if (!decodeToken) {
         return res.status(403).send({ status: false, message: `Invalid authentication token in request ` })
     }
@@ -18,6 +19,7 @@ const auth = async (req, res, next) => {
         return res.status(404).send({ status: false, message: `Session Expired, please login again` })
     }
      let verify =  jwt.verify(splitToken[1], 'Group-38')
+     console.log(verify)
     if (!verify) {
         return res.status(403).send({ status: false, message: `Invalid authentication token in request` })
     }

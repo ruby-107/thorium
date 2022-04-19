@@ -18,6 +18,7 @@ const createUSer = async (req, res) => {
         status: false, msg: "Invalid request parameters ,please provide the user details",
       });
 
+   
     let { fname, lname, email, phone, password, address } = requestBody;
 
     if (!validator.isValid(fname))
@@ -74,7 +75,7 @@ const createUSer = async (req, res) => {
     let hash = await bcrypt.hash(req.body.password, salt)
     console.log(hash)
 
-    // let hasedPassword = await bcrypt.hash(password, saltRounds);
+    
 
     if (!validator.isValid(address))
       return res.status(400).json({ status: false, msg: "address is required" });
@@ -119,8 +120,7 @@ const createUSer = async (req, res) => {
         if(!/(^[0-9]{6}(?:\s*,\s*[0-9]{6})*$)/.test(address.billing.pincode)){
           return res.status(400).send({status:false, msg:`pincode six digit number`})
          }
-      // if (address.shipping.pincode.length != 6)
-      //   return res.status(400).send({ status: false, message: "pincode should be 6 digit" })
+      
     }
 
 
@@ -189,6 +189,7 @@ module.exports.login = login
 const getUserProfile = async function (req, res) {
   try {
     let userId = req.params.userId
+    let userIdFromToken = req.userId;
 
     
     if (!validator.isValidObjectId(userId)) {
@@ -198,6 +199,15 @@ const getUserProfile = async function (req, res) {
     if (!userprofile) {
       return res.status(404).send({ status: false, msg: "not found " })
     }
+    const findUser = await userModel.findById({ _id: userId })
+        if (!findUser) {
+            return res.status(400).send({ status: false, message: `User doesn't exist by ${userId}` })
+        }
+        //Authentication & authorization
+        if (findUser._id.toString() != userIdFromToken) {
+            return res.status(401).send({ status: false, message: `Unauthorized access! User's info doesn't match` });
+        }
+
     let result = {
       address: userprofile.address,
       _id: userprofile._id,
@@ -227,6 +237,17 @@ module.exports.getUserProfile = getUserProfile
 const updateProfile = async function (req, res) {
   try {
       const userId = req.params.userId
+      let userIdFromToken = req.userId;
+
+
+      const findUser = await userModel.findById({ _id: userId })
+      if (!findUser) {
+          return res.status(400).send({ status: false, message: `User doesn't exist by ${userId}` })
+      }
+      //Authentication & authorization
+      if (findUser._id.toString() != userIdFromToken) {
+          return res.status(401).send({ status: false, message: `Unauthorized access! User's info doesn't match` });
+      }
       if (!validator.isValid(userId)) {
           return res.status(400).send({ status: false, msg: "userId is required" })
       }
