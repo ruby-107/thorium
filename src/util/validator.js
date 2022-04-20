@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const isValid=value=>{
     if(typeof value==="undefined" || typeof value===null) return false;
     if(typeof value==="string"  && value.trim().length===0) return false;
+    if(typeof(value) == "number" && value === null) return false
     return true
   }
   
@@ -32,7 +33,19 @@ const validQuantity = function isInteger(value) {
 const isValidStatus = function(status) {
   return ['pending', 'completed', 'cancelled'].indexOf(status) !== -1
 }
+const isValidObject = (data) => {
+  if (Object.keys(data).length === 0){
+      return false
+  }
+  return true
+}
 
+// const isValid = (value) => {
+//   if(typeof(value) == "undefined" || value == null)return false
+//   if(typeof(value) == "string" && value.trim().length === 0) return false
+//   if(typeof(value) == "number" && value === null) return false
+//   return true
+// }
 
 
   module.exports={isValid,
@@ -41,6 +54,7 @@ const isValidStatus = function(status) {
     validString,
     validInstallment,
     validQuantity,
-    isValidStatus
+    isValidStatus,
+    isValidObject
 }
 

@@ -219,6 +219,14 @@ module.exports.updateProduct = updateProduct
 
 const productDel=async function (req, res){
     try{
+
+        let productId = req.params.productId 
+        const Product = await productModel.findById(productId);
+        if (Product.isDeleted == true) {
+            res.status(400).send({ status: false, msg: "product is already deleted" })
+            return
+        }
+
         const find=await productModel.findOneAndUpdate({_id:req.params.productId , isDeleted:false},{isDeleted:true,deletedAt:new Date()},{new:true})
         if(!find){
            return res.status(404).send({status:false,msg:"productId does not exists"})
