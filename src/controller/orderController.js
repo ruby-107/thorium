@@ -16,6 +16,7 @@ const orderCreation = async (req, res) => {
         const userId = req.params.userId;
         const requestBody = req.body;
         const userIdFromToken = req.userId;
+        
 
         //validation for request body
         if (!validator.isValidRequestBody(requestBody)) {
@@ -124,10 +125,7 @@ const updateOrder = async (req, res) => {
          return res.status(401).send({ status: false, message: `Unauthorized access! User's info doesn't match` });
           
       }
-      // if (req.userId != req.params.userId)
-      //  return res.status(401).json({ status: false, msg: "Authorised user to create cart" });
-
-
+      
       if (!orderId) {
           return res.status(400).send({status: false, message: `Order doesn't exists`});
       }
@@ -201,3 +199,5 @@ const updateOrder = async (req, res) => {
 }
 module.exports.updateOrder=updateOrder
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
